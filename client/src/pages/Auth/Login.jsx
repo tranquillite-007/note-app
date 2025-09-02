@@ -233,7 +233,7 @@ const Login = () => {
               }
             }}
             onError={() => setError("Google login failed. Please try again.")}
-            width="100%"
+            width="100"
           />
 
           {/* Footer Link */}
