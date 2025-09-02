@@ -2,37 +2,42 @@ const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
 const dotenv = require("dotenv");
-const path = require("path"); // Add this import
+const path = require("path");
 
-// Load env vars
 dotenv.config();
 
-// Create Express app
 const app = express();
 
-// Middleware
+const allowedOrigins = [
+  "https://mern-gamma-lemon.vercel.app",
+  "http://localhost:3000",
+];
+
 app.use(
   cors({
-    origin: process.env.CLIENT_URL || "http://localhost:3000",
+    origin: function (origin, callback) {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("CORS not allowed for this origin: " + origin));
+      }
+    },
     credentials: true,
   })
 );
+
 app.use(express.json());
 
-// Import routes
 const auth = require("./routes/auth");
 const notes = require("./routes/notes");
 
-// Mount routers
 app.use("/api/auth", auth);
 app.use("/api/notes", notes);
 
-// Basic route
 app.get("/", (req, res) => {
   res.json({ message: "Note Taking API is running!" });
 });
 
-// Handle undefined routes
 app.use("*", (req, res) => {
   res.status(404).json({
     success: false,
@@ -48,13 +53,10 @@ if (process.env.NODE_ENV === "production") {
   });
 }
 
-// Connect to database and start server
 mongoose
   .connect(process.env.DATABASE_URL)
   .then(() => {
     console.log("MongoDB connected successfully");
-
-    // Start server
     const PORT = process.env.PORT || 5000;
     app.listen(PORT, () => {
       console.log(`Server is running on port ${PORT}`);
