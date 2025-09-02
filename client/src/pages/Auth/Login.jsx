@@ -59,7 +59,7 @@ const Login = () => {
   return (
     <div className="min-h-screen flex flex-col lg:flex-row bg-white">
       <div className="w-full lg:w-[41%] flex flex-col justify-center px-6 sm:px-12 lg:px-16 py-8 lg:min-h-screen">
-        <div className="mx-auto lg:mx-0 mb-8 lg:absolute lg:top-8 lg:-left-20 ">
+        <div className="mx-auto lg:mx-0 mb-8 lg:absolute lg:top-8 lg:-left-20">
           <img
             src="/logo.png"
             alt="Logo"
@@ -68,13 +68,11 @@ const Login = () => {
         </div>
 
         <div className="lg:py-16">
-          {/* Title */}
           <h2 className="text-3xl font-bold text-gray-900 mb-2">Sign in</h2>
           <p className="text-gray-600 mb-6">
             Please login to continue to your account.
           </p>
 
-          {/* Form */}
           <form
             className="space-y-5"
             onSubmit={showOtp ? handleVerifyOTP : handleRequestOTP}
@@ -85,7 +83,6 @@ const Login = () => {
               </div>
             )}
 
-            {/* Email */}
             <div>
               <label
                 htmlFor="email"
@@ -105,7 +102,6 @@ const Login = () => {
               />
             </div>
 
-            {/* OTP */}
             {showOtp && (
               <div className="relative">
                 <label
@@ -178,7 +174,6 @@ const Login = () => {
               </div>
             )}
 
-            {/* Remember Me */}
             <div className="flex items-center">
               <input
                 type="checkbox"
@@ -195,7 +190,6 @@ const Login = () => {
               </label>
             </div>
 
-            {/* Submit Button */}
             <button
               type="submit"
               disabled={loading}
@@ -205,38 +199,36 @@ const Login = () => {
             </button>
           </form>
 
-          {/* Or Divider */}
           <div className="my-6 flex items-center">
             <div className="flex-grow border-t border-gray-300"></div>
             <span className="px-3 text-gray-500 text-sm">Or continue with</span>
             <div className="flex-grow border-t border-gray-300"></div>
           </div>
 
-          {/* Google Login */}
-          <GoogleLogin
-            onSuccess={async (credentialResponse) => {
-              try {
-                const response = await authService.googleAuth(
-                  credentialResponse.credential
-                );
-                if (response.success) {
-                  login(response.user, response.token);
-                  navigate("/dashboard");
-                } else {
-                  setError(response.message || "Google login failed");
+          <div className="w-full max-w-sm mx-auto">
+            <GoogleLogin
+              onSuccess={async (credentialResponse) => {
+                try {
+                  const response = await authService.googleAuth(
+                    credentialResponse.credential
+                  );
+                  if (response.success) {
+                    login(response.user, response.token);
+                    navigate("/dashboard");
+                  } else {
+                    setError(response.message || "Google login failed");
+                  }
+                } catch (error) {
+                  setError(
+                    error.response?.data?.message ||
+                      "Google login failed. Please try again."
+                  );
                 }
-              } catch (error) {
-                setError(
-                  error.response?.data?.message ||
-                    "Google login failed. Please try again."
-                );
-              }
-            }}
-            onError={() => setError("Google login failed. Please try again.")}
-            width="100"
-          />
+              }}
+              onError={() => setError("Google login failed. Please try again.")}
+            />
+          </div>
 
-          {/* Footer Link */}
           <p className="mt-6 text-sm text-gray-600 text-center">
             Need an account?{" "}
             <Link to="/signup" className="text-blue-600 hover:underline">
